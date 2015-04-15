@@ -1,7 +1,7 @@
 # Gandi.widget
 
 Gandi widget allows you to monitor and manage your virtual machines directly from your panel.
-It uses gandi.cli as a library so you need to have it installed and configured.
+It uses [gandi.cli](https://github.com/Gandi/gandi.cli) as a library so you need to have it installed and configured.
 
 ![Gandi widget menu screenhot](http://i.imgur.com/fTgNRbD.png)
 ![Gandi widget status screenhot](http://i.imgur.com/A5x3MjL.png)
