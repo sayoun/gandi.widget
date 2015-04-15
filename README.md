@@ -3,6 +3,9 @@
 Gandi widget allows you to monitor and manage your virtual machines directly from your panel.
 It uses gandi.cli as a library so you need to have it installed and configured.
 
+![Gandi widget menu screenhot](http://i.imgur.com/fTgNRbD.png)
+![Gandi widget status screenhot](http://i.imgur.com/A5x3MjL.png)
+
 With this widget you can:
 
 * Quickly see which virtual machines are active.
