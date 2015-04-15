@@ -1,0 +1,6 @@
+?package(gandi-widget): \
+needs="X11" \
+section="Applications/Administration" \
+title="gandi-widget" \
+command="/usr/bin/gandi-widget.py" \
+icon="/usr/share/pixmaps/gandi-widget.png"
