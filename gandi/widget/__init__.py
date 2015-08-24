@@ -10,6 +10,9 @@ from gandi.cli.modules.iaas import Iaas
 from gandi.cli.modules.status import Status
 
 
+_curr_dir=os.path.split(__file__)[0]
+
+
 class GandiWidget:
 
     def __init__(self):
@@ -18,12 +21,9 @@ class GandiWidget:
             "gandi.widget",
             appindicator.IndicatorCategory.APPLICATION_STATUS)
 
-        media_path = os.path.dirname(__file__)
-        if not media_path:
-            media_path = './'
         self.indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
-        self.indicator.set_icon_theme_path(media_path)
-        self.indicator.set_icon('gandi')
+        icon = os.path.join(_curr_dir, 'resources', 'gandi.png')
+        self.indicator.set_icon(icon)
 
         Notify.init('Gandi Widget')
 
