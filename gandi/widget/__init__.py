@@ -45,12 +45,16 @@ class GandiWidget:
 
     def build_menu(self):
         for name, kls in self._subs:
+            elements = kls(self).list()
+            if not elements:
+                continue
+
             menu_item = Gtk.ImageMenuItem.new_with_label(name)
             menu_item.set_always_show_image(False)
             menu_item.show()
 
             sub_menu = Gtk.Menu.new()
-            for item in kls(self).list():
+            for item in elements:
                 sub_menu.append(item)
 
             menu_item.set_submenu(sub_menu)

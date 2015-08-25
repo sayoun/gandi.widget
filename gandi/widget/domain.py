@@ -20,11 +20,14 @@ class Domain(Base):
             fqdn = domain['fqdn']
 
             date_end = domain['date_delete']
-            if date_end - datetime.now() > timedelta(days=30):
+            if not date_end:
+                img = Gtk.Image.new_from_icon_name(Gtk.STOCK_DISCARD,
+                                                   Gtk.IconSize.MENU)
+            elif date_end - datetime.now() > timedelta(days=30):
                 img = Gtk.Image.new_from_icon_name(Gtk.STOCK_YES,
                                                    Gtk.IconSize.MENU)
             else:
-                img = Gtk.Image.new_from_icon_name(Gtk.STOCK_YES,
+                img = Gtk.Image.new_from_icon_name(Gtk.STOCK_NO,
                                                    Gtk.IconSize.MENU)
 
             menu_item = self._add_menuitem(None, fqdn, img=img)
