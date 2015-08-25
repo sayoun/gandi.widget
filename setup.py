@@ -36,6 +36,7 @@ tests_requires = requires + extras_require['test']
 
 
 setup(name=name,
+      namespace_packages=['gandi'],
       version='0.1',
       description='Widget to visualise your Gandi objects.',
       long_description=README + '\n\n' +  CHANGES,
@@ -51,4 +52,8 @@ setup(name=name,
       zip_safe=False,
       install_requires=requires,
       tests_require=tests_requires,
+      entry_points="""\
+[console_scripts]
+gwidget = gandi.widget.__main__:main
+      """,
       )
