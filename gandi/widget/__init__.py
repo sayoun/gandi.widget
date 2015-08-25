@@ -10,6 +10,7 @@ from gandi.cli.modules.status import Status
 
 from .iaas import Iaas
 from .domain import Domain
+from .paas import Paas
 
 
 _curr_dir = os.path.split(__file__)[0]
@@ -17,6 +18,7 @@ _curr_dir = os.path.split(__file__)[0]
 
 class GandiWidget:
     _subs = (('Server (IaaS)', Iaas),
+             ('Instance (PaaS)', Paas),
              ('Domain', Domain),
              )
 

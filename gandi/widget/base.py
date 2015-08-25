@@ -17,6 +17,9 @@ class Base(object):
         message = '%s copied to clipboard' % element
         self._notify(message)
 
+    def open_url(self, widget, address):
+        Gtk.show_uri(None, address, Gdk.CURRENT_TIME)
+
     def _call_api(self, method, *args, **kwargs):
         try:
             method(*args)
