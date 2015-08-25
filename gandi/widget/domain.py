@@ -33,6 +33,9 @@ class Domain(Base):
             sub_menu = Gtk.Menu.new()
             domain = ApiDomain.info(domain['fqdn'])
 
+            self._add_menuitem(sub_menu, 'Delete : %s' % domain['date_delete'])
+            self._separator(sub_menu)
+
             # contacts
             for contact in ('owner', 'admin', 'bill', 'tech', 'reseller'):
                 if domain['contacts'].get(contact):
