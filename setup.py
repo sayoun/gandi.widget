@@ -1,8 +1,7 @@
+from __future__ import print_function
 import os
-import re
 
 from setuptools import setup, find_packages
-from __future__ import print_function
 
 try:
     from gi.repository import Gtk, Gdk, GLib
@@ -35,16 +34,15 @@ extras_require = {
 tests_requires = requires + extras_require['test']
 
 
-
 setup(name=name,
       namespace_packages=['gandi'],
       version='0.1',
       description='Widget to visualise your Gandi objects.',
-      long_description=README + '\n\n' +  CHANGES,
+      long_description=README + '\n\n' + CHANGES,
       classifiers=[
-        "Programming Language :: Python",
-        "Topic :: Internet :: WWW/HTTP",
-        ],
+          "Programming Language :: Python",
+          "Topic :: Internet :: WWW/HTTP",
+      ],
       author='',
       author_email='',
       url='',
