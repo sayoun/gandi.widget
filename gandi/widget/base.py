@@ -19,7 +19,7 @@ class Base(object):
 
     def _call_api(self, method, *args, **kwargs):
         try:
-            method(*args)
+            method(*args, **kwargs)
         except Exception as err:
             print('Error: ', err.message)
             error_indicator = Gtk.ImageMenuItem.new_with_label(
