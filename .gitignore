@@ -1,3 +1,7 @@
+*~
+*.py[cod]
+__pycache__
+
 build/
 debian
 gandi.widget.egg-info/
