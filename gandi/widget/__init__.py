@@ -40,7 +40,16 @@ class GandiWidget:
 
     def build_menu(self):
         for name, kls in self._subs.items():
-            kls(self).list()
+            menu_item = Gtk.ImageMenuItem.new_with_label(name)
+            menu_item.set_always_show_image(False)
+            menu_item.show()
+
+            sub_menu = Gtk.Menu.new()
+            for item in kls(self).list():
+                sub_menu.append(item)
+
+            menu_item.set_submenu(sub_menu)
+            self.menu.append(menu_item)
 
         self.seperator = Gtk.SeparatorMenuItem.new()
         self.seperator.show()

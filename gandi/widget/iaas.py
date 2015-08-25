@@ -13,6 +13,7 @@ class Iaas(object):
     def list(self):
         vms = ApiIaas.list()
         # create a menu item per vm
+        menu_items = []
         for vm in vms:
             hostname = vm['hostname']
             state = vm['state']
@@ -119,7 +120,8 @@ class Iaas(object):
             sub_menu.append(seperator)
 
             menu_item.set_submenu(sub_menu)
-            self._widget.menu.append(menu_item)
+            menu_items.append(menu_item)
+        return menu_items
 
     def on_ip_clicked(self, widget, address):
         clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
