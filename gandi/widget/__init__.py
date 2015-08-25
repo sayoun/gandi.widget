@@ -2,7 +2,7 @@
 
 import os
 
-from gi.repository import Gtk, Gdk, GLib
+from gi.repository import Gtk, GLib
 from gi.repository import AppIndicator3 as appindicator
 from gi.repository import Notify
 
@@ -12,12 +12,13 @@ from .iaas import Iaas
 from .domain import Domain
 
 
-_curr_dir=os.path.split(__file__)[0]
+_curr_dir = os.path.split(__file__)[0]
 
 
 class GandiWidget:
-    _subs = {'Iaas': Iaas,
-             'Domain': Domain}
+    _subs = (('Server (IaaS)', Iaas),
+             ('Domain', Domain),
+             )
 
     def __init__(self):
         self.indicator = appindicator.Indicator.new(
@@ -41,7 +42,7 @@ class GandiWidget:
         GLib.timeout_add_seconds(20, self.on_status_refresh)
 
     def build_menu(self):
-        for name, kls in self._subs.items():
+        for name, kls in self._subs:
             menu_item = Gtk.ImageMenuItem.new_with_label(name)
             menu_item.set_always_show_image(False)
             menu_item.show()
