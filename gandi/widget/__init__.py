@@ -9,13 +9,15 @@ from gi.repository import Notify
 from gandi.cli.modules.status import Status
 
 from .iaas import Iaas
+from .domain import Domain
 
 
 _curr_dir=os.path.split(__file__)[0]
 
 
 class GandiWidget:
-    _subs = {'Iaas': Iaas}
+    _subs = {'Iaas': Iaas,
+             'Domain': Domain}
 
     def __init__(self):
         self.indicator = appindicator.Indicator.new(
