@@ -22,7 +22,7 @@ class Base(object):
 
     def _call_api(self, method, *args, **kwargs):
         try:
-            method(*args)
+            method(*args, **kwargs)
         except Exception as err:
             print('Error: ', err.message)
             error_indicator = Gtk.ImageMenuItem.new_with_label(
@@ -44,3 +44,26 @@ class Base(object):
         notification.set_urgency(urgency=Notify.Urgency.CRITICAL)
         notification.set_timeout(1)
         notification.show()
+
+    def _separator(self, sub_menu):
+        separator = Gtk.SeparatorMenuItem.new()
+        separator.show()
+        sub_menu.append(separator)
+
+    def _add_menuitem(self, sub_menu, label, action=None, attr=None, img=None):
+        if img:
+            item = Gtk.ImageMenuItem.new_with_label(label)
+            item.set_always_show_image(True)
+            item.set_image(img)
+        else:
+            item = Gtk.MenuItem.new()
+            item.set_label(label)
+
+        if action:
+            item.connect('activate', action, *attr)
+
+        item.show()
+        if sub_menu:
+            sub_menu.append(item)
+
+        return item
