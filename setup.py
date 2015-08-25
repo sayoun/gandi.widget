@@ -2,6 +2,7 @@ import os
 import re
 
 from setuptools import setup, find_packages
+from __future__ import print_function
 
 try:
     from gi.repository import Gtk, Gdk, GLib
@@ -11,7 +12,7 @@ except ImportError:
     packages = ('gir1.2-appindicator3', 'python-appindicator',
                 'gir1.2-gtk-2.0', 'gir1.2-gtk-3.0', 'gir1.2-glib-2.0',
                 'gir1.2-appindicator3-0.1', 'gir1.2-notify-0.7')
-    print 'You have to install "%s"' % ('", "'.join(packages))
+    print('You have to install "%s"' % ('", "'.join(packages)))
     raise
 
 
