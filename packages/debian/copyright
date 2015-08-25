@@ -1,0 +1,10 @@
+Files: *
+Copyright: © 2015 Dejan Filipovic
+License: GPL-3
+
+Files: debian/*
+Copyright: © 2015 Nicolas Chipaux
+Licence: GPL-3
+
+Licence: GPL-3
+See /usr/share/common-licenses/GPL-3
