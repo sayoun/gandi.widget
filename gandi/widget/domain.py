@@ -19,9 +19,6 @@ class Domain(Base):
         for domain in domains:
             fqdn = domain['fqdn']
 
-            menu_item = Gtk.ImageMenuItem.new_with_label(fqdn)
-            menu_item.set_always_show_image(True)
-
             date_end = domain['date_delete']
             if date_end - datetime.now() > timedelta(days=30):
                 img = Gtk.Image.new_from_icon_name(Gtk.STOCK_YES,
@@ -29,10 +26,8 @@ class Domain(Base):
             else:
                 img = Gtk.Image.new_from_icon_name(Gtk.STOCK_YES,
                                                    Gtk.IconSize.MENU)
-            menu_item.set_image(img)
 
-            # show the item
-            menu_item.show()
+            menu_item = self._add_menuitem(None, fqdn, img=img)
 
             # create the submenu for the domain
             sub_menu = Gtk.Menu.new()
@@ -42,16 +37,12 @@ class Domain(Base):
             for contact in ('owner', 'admin', 'bill', 'tech', 'reseller'):
                 if domain['contacts'].get(contact):
                     handle = domain['contacts'][contact]['handle']
-                    item_contact = Gtk.MenuItem.new()
-                    item_contact.set_label('%s : %s' % (contact, handle))
-                    item_contact.connect('activate', self.copy, handle)
-                    item_contact.show()
-                    sub_menu.append(item_contact)
+                    self._add_menuitem(sub_menu,
+                                       '%s : %s' % (contact, handle),
+                                       action=self.copy, attr=(handle,))
             
-            # seperator
-            seperator = Gtk.SeparatorMenuItem.new()
-            seperator.show()
-            sub_menu.append(seperator)
+            # separator
+            self._separator(sub_menu)
 
             # autorenew
             label = 'active'
@@ -60,56 +51,36 @@ class Domain(Base):
                 label = 'inactive'
                 method = self.activate_autorenew
 
-            item_autorenew = Gtk.MenuItem.new()
-            item_autorenew.set_label('Autorenew : %s' % label)
-            item_autorenew.connect('activate', method, fqdn)
-            item_autorenew.show()
-            sub_menu.append(item_autorenew)
+            self._add_menuitem(sub_menu, 'Autorenew : %s' % label,
+                               action=method, attr=(fqdn,))
 
             # services
-            item_services = Gtk.MenuItem.new()
-            item_services.set_label('Services')
-            item_services.show()
-            sub_menu.append(item_services)
+            item_services = self._add_menuitem(sub_menu, 'Services')
 
             services = Gtk.Menu.new()
             for service in domain.get('services', []):
-                item_service = Gtk.MenuItem.new()
-                item_service.set_label(service)
-                item_service.show()
-                services.append(item_service)
+                self._add_menuitem(services, service)
 
             item_services.set_submenu(services)
 
             # nameservers
-            item_nameservers = Gtk.MenuItem.new()
-            item_nameservers.set_label('Nameservers')
-            item_nameservers.show()
-            sub_menu.append(item_nameservers)
+            item_nameservers = self._add_menuitem(sub_menu, 'Nameservers')
 
             nameservers = Gtk.Menu.new()
             for nameserver in domain.get('nameservers', []):
-                item_nameserver = Gtk.MenuItem.new()
-                item_nameserver.set_label(nameserver)
-                item_nameserver.show()
-                nameservers.append(item_nameserver)
+                self._add_menuitem(nameservers, nameserver)
 
             item_nameservers.set_submenu(nameservers)
 
-            # seperator
-            seperator = Gtk.SeparatorMenuItem.new()
-            seperator.show()
-            sub_menu.append(seperator)
+            # separator
+            self._separator(sub_menu)
 
             # renew
-            renew = Gtk.ImageMenuItem.new_with_label('Renew...')
-            renew.set_always_show_image(True)
             img = Gtk.Image.new_from_icon_name('go-jump',
                                                Gtk.IconSize.MENU)
-            renew.set_image(img)
-            renew.connect('activate', self.renew, fqdn)
-            renew.show()
-            sub_menu.append(renew)
+            self._add_menuitem(sub_menu, 'Renew...',
+                               action=self.renew, attr=(fqdn,),
+                               img=img)
 
             # add menu
             menu_item.set_submenu(sub_menu)
