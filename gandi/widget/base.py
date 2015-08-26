@@ -67,3 +67,23 @@ class Base(object):
             sub_menu.append(item)
 
         return item
+
+    def _dialog(self, widget, title, text,
+                callback_ok, callback_ko=None, callback_params=None):
+        win = Gtk.MessageDialog(None,
+                                Gtk.DialogFlags.MODAL,
+                                Gtk.MessageType.INFO,
+                                Gtk.ButtonsType.YES_NO,
+                                text)
+        win.set_title(title)
+        win.connect('response', self._dialog_callback,
+                    callback_ok, callback_ko, callback_params)
+        win.run()
+        win.hide()
+
+    def _dialog_callback(self, widget, response,
+                         callback_ok, callback_ko, callback_params):
+        if response == Gtk.ResponseType.YES:
+            callback_ok(*callback_params)
+        elif response == Gtk.ResponseType.NO and callback_ko:
+            callback_ko(*callback_params)
