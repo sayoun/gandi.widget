@@ -102,5 +102,12 @@ class Domain(Base):
         self._call_api(ApiDomain.autorenew_activate, fqdn)
 
     def renew(self, widget, fqdn):
+        self._dialog(widget, 'Renew %s' % fqdn,
+                     'This is a paid action,\n'
+                     'are you sure you want to continue?',
+                     callback_ok=self._renew,
+                     callback_params=(fqdn,))
+
+    def _renew(self, fqdn):
         self._notify('Will start renew on %s' % fqdn)
         self._call_api(ApiDomain.renew, fqdn, 1, True)
