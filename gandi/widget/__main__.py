@@ -1,6 +1,22 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+"""
+GandiWidget will read in gandi.cli configuration
+~/.config/gandi/config.yaml
+
+You can add a section :
+widget:
+    sections:
+        - iaas
+        - paas
+        - domain
+    refresh: 60
+    status_refresh: 20
+
+"""
+
+
 from gandi.widget import GandiWidget
 from gi.repository import Gtk
 

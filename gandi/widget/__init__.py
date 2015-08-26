@@ -7,6 +7,7 @@ from gi.repository import AppIndicator3 as appindicator
 from gi.repository import Notify
 
 from gandi.cli.modules.status import Status
+from gandi.cli.core.conf import GandiConfig
 
 from .iaas import Iaas
 from .domain import Domain
@@ -17,9 +18,9 @@ _curr_dir = os.path.split(__file__)[0]
 
 
 class GandiWidget:
-    _subs = (('Server (IaaS)', Iaas),
-             ('Instance (PaaS)', Paas),
-             ('Domain', Domain),
+    _subs = (('iaas', 'Server (IaaS)', Iaas),
+             ('paas', 'Instance (PaaS)', Paas),
+             ('domain', 'Domain', Domain),
              )
 
     def __init__(self):
@@ -34,22 +35,31 @@ class GandiWidget:
 
         Notify.init('Gandi Widget')
 
+        GandiConfig.load_config()
+        self.conf = GandiConfig.get('widget') or {}
+        self.sections = self.conf.get('sections') or ['iaas', 'paas', 'domain']
+        refresh = self.conf.get('refresh') or 60
+        status_refresh = self.conf.get('status_refresh') or 20
+
         # create a menu
         self.menu = Gtk.Menu()
         # Add items to Menu and connect signals.
         self.build_menu()
         # Refresh menu every 1 min by default
-        GLib.timeout_add_seconds(60, self.on_refresh)
+        GLib.timeout_add_seconds(refresh, self.on_refresh)
         # Poll for status new events
-        GLib.timeout_add_seconds(20, self.on_status_refresh)
+        GLib.timeout_add_seconds(status_refresh, self.on_status_refresh)
 
     def build_menu(self):
-        for name, kls in self._subs:
+        for name, label, kls in self._subs:
+            if name not in self.sections:
+                continue
+
             elements = kls(self).list()
             if not elements:
                 continue
 
-            menu_item = Gtk.ImageMenuItem.new_with_label(name)
+            menu_item = Gtk.ImageMenuItem.new_with_label(label)
             menu_item.set_always_show_image(False)
             menu_item.show()
 
