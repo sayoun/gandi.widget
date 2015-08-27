@@ -11,7 +11,8 @@ from .base import Base
 class Iaas(Base):
 
     def list(self):
-        vms = ApiIaas.list({'sort_by': 'hostname'})
+        vms = ApiIaas.list({'state': ['running', 'halted'],
+                            'sort_by': 'hostname'})
         # create a menu item per vm
         menu_items = []
         for vm in vms:
