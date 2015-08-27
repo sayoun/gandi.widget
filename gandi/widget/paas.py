@@ -10,8 +10,16 @@ from .base import Base
 
 class Paas(Base):
 
-    def list(self):
-        instances = ApiPaas.list({'state': 'running', 'sort_by': 'name'})
+    @staticmethod
+    def retrieve():
+        instances = []
+        for paas in ApiPaas.list({'state': 'running', 'sort_by': 'name'}):
+            paas['vhosts'] = vhosts = ApiVhost.list({'paas_id': paas['id']})
+            instances.append(paas)
+
+        return instances
+
+    def display(self, instances):
         # create a menu item per paas
         menu_items = []
         for paas in instances:
@@ -29,7 +37,6 @@ class Paas(Base):
             menu_item = self._add_menuitem(None, name, img=img)
 
             sub_menu = Gtk.Menu.new()
-            paas = ApiPaas.info(paas_id)
 
             self._add_menuitem(sub_menu, 'Type: %s' % paas['type'])
             self._add_menuitem(sub_menu, 'Size: %s' % paas['size'])
@@ -39,8 +46,7 @@ class Paas(Base):
 
             self._separator(sub_menu)
 
-            vhosts = ApiVhost.list({'paas_id': paas_id})
-            for host in vhosts:
+            for host in paas['vhosts']:
                 address = 'http%s://%s' % ('s' if host['cert_id'] else '',
                                            host['name'])
                 self._add_menuitem(sub_menu, 'Vhost: %s' % host['name'],

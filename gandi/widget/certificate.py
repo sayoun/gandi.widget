@@ -19,8 +19,11 @@ class Certificate(Base):
               'pro': 'ssl_02_pro_small.png',
               'bus': 'ssl_03_business_small.png'}
 
-    def list(self):
-        certs = ApiCert.list({'status': 'valid', 'sort_by': 'cn'})
+    @staticmethod
+    def retrieve():
+        return ApiCert.list({'status': 'valid', 'sort_by': 'cn'})
+
+    def display(self, certs):
         # create a menu item per certificate
         menu_items = []
         for cert in certs:

@@ -10,9 +10,15 @@ from .base import Base
 
 class Iaas(Base):
 
-    def list(self):
-        vms = ApiIaas.list({'state': ['running', 'halted'],
-                            'sort_by': 'hostname'})
+    @staticmethod
+    def retrieve():
+        vms = []
+        for vm in ApiIaas.list({'state': ['running', 'halted'],
+                                          'sort_by': 'hostname'}):
+            vms.append(ApiIaas.info(vm['id']))
+        return vms
+
+    def display(self, vms):
         # create a menu item per vm
         menu_items = []
         for vm in vms:
@@ -31,7 +37,6 @@ class Iaas(Base):
 
             # create the submenu for the vm
             sub_menu = Gtk.Menu.new()
-            vm = ApiIaas.info(vm_id)
 
             for iface in vm['ifaces']:
                 for ip in iface['ips']:
