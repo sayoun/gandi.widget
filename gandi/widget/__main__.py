@@ -11,6 +11,7 @@ widget:
         - iaas
         - paas
         - domain
+        - cert
     refresh: 60
     status_refresh: 20
 

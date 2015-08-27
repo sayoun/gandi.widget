@@ -9,6 +9,7 @@ from gi.repository import Notify
 from gandi.cli.modules.status import Status
 from gandi.cli.core.conf import GandiConfig
 
+from .certificate import Certificate
 from .iaas import Iaas
 from .domain import Domain
 from .paas import Paas
@@ -21,7 +22,8 @@ class GandiWidget:
     _subs = (('iaas', 'Server (IaaS)', Iaas),
              ('paas', 'Instance (PaaS)', Paas),
              ('domain', 'Domain', Domain),
-             )
+             ('cert', 'Certificate', Certificate),
+            )
 
     def __init__(self):
         self.indicator = appindicator.Indicator.new(
