@@ -20,7 +20,7 @@ class Certificate(Base):
               'bus': 'ssl_03_business_small.png'}
 
     def list(self):
-        certs = ApiCert.list({'status': 'valid'})
+        certs = ApiCert.list({'status': 'valid', 'sort_by': 'cn'})
         # create a menu item per certificate
         menu_items = []
         for cert in certs:
