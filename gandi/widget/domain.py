@@ -13,7 +13,7 @@ from .base import Base
 class Domain(Base):
 
     def list(self):
-        domains = ApiDomain.list({})
+        domains = ApiDomain.list({'sort_by': 'fqdn'})
         # create a menu item per domain
         menu_items = []
         for domain in domains:
