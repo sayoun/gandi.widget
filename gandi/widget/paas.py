@@ -11,7 +11,7 @@ from .base import Base
 class Paas(Base):
 
     def list(self):
-        instances = ApiPaas.list()
+        instances = ApiPaas.list({'state': 'running', 'sort_by': 'name'})
         # create a menu item per paas
         menu_items = []
         for paas in instances:
@@ -19,7 +19,7 @@ class Paas(Base):
             state = paas['state']
             paas_id = paas['id']
 
-            if state == "running":
+            if state == 'running':
                 img = Gtk.Image.new_from_icon_name(Gtk.STOCK_YES,
                                                    Gtk.IconSize.MENU)
             else:
