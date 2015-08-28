@@ -56,8 +56,10 @@ class GandiWidget(Base):
             appindicator.IndicatorCategory.APPLICATION_STATUS)
 
         self.indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
-        icon = os.path.join(_curr_dir, 'resources', 'gandi.png')
-        self.indicator.set_icon(icon)
+        self.icon = os.path.join(_curr_dir, 'resources', 'gandi.png')
+        self.icon_err = os.path.join(_curr_dir, 'resources', 'gandi-err.png')
+        self.indicator.set_icon(self.icon)
+
         self.queue = multiprocessing.Queue()
         self.pool = multiprocessing.Pool(1)
 
@@ -147,6 +149,12 @@ class GandiWidget(Base):
             message = '%s: %s' % (','.join(event['services']), event['title'])
 
             self._notify(message, 'Gandi Status Event')
+
+        if events:
+            self.indicator.set_icon(self.icon_err)
+        else:
+            self.indicator.set_icon(self.icon)
+        return True
 
     def on_exit_activate(self, widget):
         self.on_destroy(widget)
