@@ -66,13 +66,14 @@ class Domain(Base):
                                action=method, attr=(fqdn,))
 
             # services
-            item_services = self._add_menuitem(sub_menu, 'Services')
+            if len(domain.get('services', [])):
+                item_services = self._add_menuitem(sub_menu, 'Services')
 
-            services = Gtk.Menu.new()
-            for service in domain.get('services', []):
-                self._add_menuitem(services, service)
+                services = Gtk.Menu.new()
+                for service in domain['services']:
+                    self._add_menuitem(services, service)
 
-            item_services.set_submenu(services)
+                item_services.set_submenu(services)
 
             # nameservers
             item_nameservers = self._add_menuitem(sub_menu, 'Nameservers')
