@@ -36,7 +36,7 @@ tests_requires = requires + extras_require['test']
 
 setup(name=name,
       namespace_packages=['gandi'],
-      version='0.1',
+      version='0.2',
       description='Widget to visualise your Gandi objects.',
       long_description=README + '\n\n' + CHANGES,
       classifiers=[
