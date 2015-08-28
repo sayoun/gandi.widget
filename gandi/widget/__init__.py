@@ -154,6 +154,7 @@ class GandiWidget(Base):
             self.indicator.set_icon(self.icon_err)
         else:
             self.indicator.set_icon(self.icon)
+        return True
 
     def on_exit_activate(self, widget):
         self.on_destroy(widget)
