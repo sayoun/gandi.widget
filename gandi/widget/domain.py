@@ -12,8 +12,14 @@ from .base import Base
 
 class Domain(Base):
 
-    def list(self):
-        domains = ApiDomain.list({'sort_by': 'fqdn'})
+    @staticmethod
+    def retrieve():
+        domains = []
+        for dom in ApiDomain.list({'sort_by': 'fqdn'}):
+            domains.append(ApiDomain.info(dom['fqdn']))
+        return domains
+
+    def display(self, domains):
         # create a menu item per domain
         menu_items = []
         for domain in domains:
@@ -34,7 +40,6 @@ class Domain(Base):
 
             # create the submenu for the domain
             sub_menu = Gtk.Menu.new()
-            domain = ApiDomain.info(domain['fqdn'])
 
             self._add_menuitem(sub_menu, 'Delete : %s' % domain['date_delete'])
             self._separator(sub_menu)

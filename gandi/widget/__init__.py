@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from functools import partial
+import multiprocessing
 import os
 
 from gi.repository import Gtk, GLib
@@ -18,12 +20,33 @@ from .paas import Paas
 _curr_dir = os.path.split(__file__)[0]
 
 
+def get_iaas():
+    return Iaas.retrieve()
+
+
+def get_paas():
+    return Paas.retrieve()
+
+
+def get_domain():
+    return Domain.retrieve()
+
+
+def get_cert():
+    return Certificate.retrieve()
+
+
 class GandiWidget:
-    _subs = (('iaas', 'Server (IaaS)', Iaas),
-             ('paas', 'Instance (PaaS)', Paas),
-             ('domain', 'Domain', Domain),
-             ('cert', 'Certificate', Certificate),
+    _subs = (('iaas', 'Server (IaaS)', get_iaas),
+             ('paas', 'Instance (PaaS)', get_paas),
+             ('domain', 'Domain', get_domain),
+             ('cert', 'Certificate', get_cert),
             )
+    _display = {'iaas': Iaas,
+                'paas': Paas,
+                'domain': Domain,
+                'cert': Certificate}
+    _menu = {}
 
     def __init__(self):
         self.indicator = appindicator.Indicator.new(
@@ -34,6 +57,8 @@ class GandiWidget:
         self.indicator.set_status(appindicator.IndicatorStatus.ACTIVE)
         icon = os.path.join(_curr_dir, 'resources', 'gandi.png')
         self.indicator.set_icon(icon)
+        self.queue = multiprocessing.Queue()
+        self.pool = multiprocessing.Pool(1)
 
         Notify.init('Gandi Widget')
 
@@ -51,23 +76,28 @@ class GandiWidget:
         GLib.timeout_add_seconds(refresh, self.on_refresh)
         # Poll for status new events
         GLib.timeout_add_seconds(status_refresh, self.on_status_refresh)
+        # Display elements
+        GLib.timeout_add_seconds(10, self.display_elements)
 
-    def build_menu(self):
-        for name, label, kls in self._subs:
+    def _retrieve_all(self):
+        for name, _, call_list in self._subs:
             if name not in self.sections:
                 continue
 
-            elements = kls(self).list()
-            if not elements:
+            cb_menu = partial(self._retrieve_in_queue, name=name, queue=self.queue)
+            self.pool.apply_async(call_list, callback=cb_menu)
+        return True
+
+    def build_menu(self):
+        for name, label, _ in self._subs:
+            if name not in self.sections:
                 continue
 
             menu_item = Gtk.ImageMenuItem.new_with_label(label)
             menu_item.set_always_show_image(False)
-            menu_item.show()
 
             sub_menu = Gtk.Menu.new()
-            for item in elements:
-                sub_menu.append(item)
+            self._menu[name] = [menu_item, sub_menu]
 
             menu_item.set_submenu(sub_menu)
             self.menu.append(menu_item)
@@ -89,8 +119,33 @@ class GandiWidget:
         self.menu.show()
         self.indicator.set_menu(self.menu)
 
+        self._retrieve_all()
+
+    @staticmethod
+    def _retrieve_in_queue(elements, name, queue):
+        queue.put([name, elements])
+
+    def display_elements(self):
+        while not self.queue.empty():
+            name, elements = self.queue.get()
+            menu_item, sub_menu = self._menu[name]
+
+            if not elements:
+                menu_item.hide()
+                continue
+
+            for item in sub_menu.get_children():
+                sub_menu.remove(item)
+
+            for item in self._display[name](self).display(elements):
+                sub_menu.append(item)
+
+            menu_item.show()
+
+        return True
+
     def on_refresh(self, widget=None):
-        self.rebuild_menu()
+        return self._retrieve_all()
 
     def on_status_refresh(self, widget=None):
         filters = {
@@ -110,12 +165,6 @@ class GandiWidget:
             notification.set_urgency(urgency=Notify.Urgency.CRITICAL)
             notification.set_timeout(1)
             notification.show()
-
-    def rebuild_menu(self):
-        for i in self.menu.get_children():
-            self.menu.remove(i)
-        self.build_menu()
-        return True
 
     def on_exit_activate(self, widget):
         self.on_destroy(widget)
