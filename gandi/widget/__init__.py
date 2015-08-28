@@ -11,6 +11,7 @@ from gi.repository import Notify
 from gandi.cli.modules.status import Status
 from gandi.cli.core.conf import GandiConfig
 
+from .base import Base
 from .certificate import Certificate
 from .iaas import Iaas
 from .domain import Domain
@@ -36,7 +37,7 @@ def get_cert():
     return Certificate.retrieve()
 
 
-class GandiWidget:
+class GandiWidget(Base):
     _subs = (('iaas', 'Server (IaaS)', get_iaas),
              ('paas', 'Instance (PaaS)', get_paas),
              ('domain', 'Domain', get_domain),
@@ -93,28 +94,17 @@ class GandiWidget:
             if name not in self.sections:
                 continue
 
-            menu_item = Gtk.ImageMenuItem.new_with_label(label)
-            menu_item.set_always_show_image(False)
+            menu_item = self._add_menuitem(self.menu, label)
+            menu_item.hide()
 
             sub_menu = Gtk.Menu.new()
             self._menu[name] = [menu_item, sub_menu]
 
             menu_item.set_submenu(sub_menu)
-            self.menu.append(menu_item)
 
-        self.seperator = Gtk.SeparatorMenuItem.new()
-        self.seperator.show()
-        self.menu.append(self.seperator)
-
-        self.refresh = Gtk.MenuItem('Refresh')
-        self.refresh.connect("activate", self.on_refresh)
-        self.refresh.show()
-        self.menu.append(self.refresh)
-
-        self.quit = Gtk.MenuItem('Quit')
-        self.quit.connect('activate', self.on_exit_activate)
-        self.quit.show()
-        self.menu.append(self.quit)
+        self._separator(self.menu)
+        self._add_menuitem(self.menu, 'Refresh', self.on_refresh, {})
+        self._add_menuitem(self.menu, 'Quit', self.on_exit_activate, {})
 
         self.menu.show()
         self.indicator.set_menu(self.menu)
@@ -155,16 +145,8 @@ class GandiWidget:
         events = Status.events(filters)
         for event in events:
             message = '%s: %s' % (','.join(event['services']), event['title'])
-            notification = Notify.Notification.new(
-                'Gandi Status Event',
-                message,
-                'gandi-widget'
-            )
 
-            notification.set_hint("transient", GLib.Variant.new_boolean(True))
-            notification.set_urgency(urgency=Notify.Urgency.CRITICAL)
-            notification.set_timeout(1)
-            notification.show()
+            self._notify(message, 'Gandi Status Event')
 
     def on_exit_activate(self, widget):
         self.on_destroy(widget)

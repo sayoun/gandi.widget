@@ -33,9 +33,9 @@ class Base(object):
             error_indicator.show()
             self._widget.menu.append(error_indicator)
 
-    def _notify(self, message):
+    def _notify(self, message, name='Gandi Widget'):
         notification = Notify.Notification.new(
-            'Gandi Widget',
+            name,
             message,
             'gandi-widget'
         )
