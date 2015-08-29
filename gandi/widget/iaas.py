@@ -4,6 +4,7 @@ from gi.repository import Gtk, Gdk, GLib
 from gi.repository import Notify
 
 from gandi.cli.modules.iaas import Iaas as ApiIaas
+from gandi.cli.modules.account import Account as ApiAccount
 
 from .base import Base
 
@@ -16,11 +17,37 @@ class Iaas(Base):
         for vm in ApiIaas.list({'state': ['running', 'halted'],
                                           'sort_by': 'hostname'}):
             vms.append(ApiIaas.info(vm['id']))
-        return vms
 
-    def display(self, vms):
-        # create a menu item per vm
+        if hasattr(ApiAccount, 'all'):
+            account = ApiAccount.all()
+        else:
+            account = ApiAccount.info()
+            account['credit_usage'] = ApiAccount.creditusage()
+
+        return [vms, account]
+
+    def display(self, elements):
+        vms, account = elements
+
         menu_items = []
+
+        # add an account menu item
+        menu_item = self._add_menuitem(None, 'Account')
+        sub_menu = Gtk.Menu.new()
+        self._add_menuitem(sub_menu, 'Credits : %s' % account['credits'])
+        self._add_menuitem(sub_menu, 'Usage %s/h' %
+                           account['credit_usage'])
+        self._add_menuitem(sub_menu, 'Average cost : %s' %
+                           account['average_credit_cost'])
+        if 'left' in account:
+            years, months, days, hours = account['left']
+            left_str = ('%d year(s) %d month(s) %d day(s) %d hour(s)' %
+                        (years, months, days, hours))
+            self._add_menuitem(sub_menu, left_str)
+        menu_item.set_submenu(sub_menu)
+        menu_items.append(menu_item)
+
+        # create a menu item per vm
         for vm in vms:
             hostname = vm['hostname']
             state = vm['state']
