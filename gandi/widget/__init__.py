@@ -129,8 +129,19 @@ class GandiWidget(Base):
             for item in sub_menu.get_children():
                 sub_menu.remove(item)
 
-            for item in self._display[name](self).display(elements):
-                sub_menu.append(item)
+            element = self._display[name](self)
+            if hasattr(element, 'label'):
+                menu_item.set_label(element.label(elements))
+            if hasattr(element, 'icon'):
+                menu_item.set_image(element.icon(elements))
+
+            items = element.display(elements)
+            if items:
+                menu_item.set_submenu(sub_menu)
+                for item in items:
+                    sub_menu.append(item)
+            else:
+                menu_item.set_submenu(None)
 
             menu_item.show()
 
