@@ -15,6 +15,7 @@ from .base import Base
 from .certificate import Certificate
 from .iaas import Iaas
 from .domain import Domain
+from .oper import Oper
 from .paas import Paas
 
 
@@ -37,16 +38,22 @@ def get_cert():
     return Certificate.retrieve()
 
 
+def get_oper():
+    return Oper.retrieve()
+
+
 class GandiWidget(Base):
     _subs = (('iaas', 'Server (IaaS)', get_iaas),
              ('paas', 'Instance (PaaS)', get_paas),
              ('domain', 'Domain', get_domain),
              ('cert', 'Certificate', get_cert),
+             ('oper', 'Operation', get_oper),
             )
     _display = {'iaas': Iaas,
                 'paas': Paas,
                 'domain': Domain,
-                'cert': Certificate}
+                'cert': Certificate,
+                'oper': Oper}
     _menu = {}
 
     def __init__(self):
