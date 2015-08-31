@@ -51,13 +51,10 @@ class Base(object):
         sub_menu.append(separator)
 
     def _add_menuitem(self, sub_menu, label, action=None, attr=None, img=None):
+        item = Gtk.ImageMenuItem.new_with_label(label)
+        item.set_always_show_image(True)
         if img:
-            item = Gtk.ImageMenuItem.new_with_label(label)
-            item.set_always_show_image(True)
             item.set_image(img)
-        else:
-            item = Gtk.MenuItem.new()
-            item.set_label(label)
 
         if action:
             item.connect('activate', action, *attr)
