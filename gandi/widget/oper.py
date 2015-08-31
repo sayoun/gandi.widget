@@ -13,17 +13,16 @@ class Oper(Base):
     @staticmethod
     def retrieve():
         if hasattr(ApiOper, 'count'):
-            wait = ApiOper.count({'step': 'WAIT'})
-            run = ApiOper.count({'step': 'RUN'})
+            cur = ApiOper.count({'step': ['BILL', 'WAIT', 'RUN', 'SUPPORT']})
             error = ApiOper.count({'step': 'ERROR'})
         else:
-            wait = len(ApiOper.list({'step': 'WAIT'}))
-            run = len(ApiOper.list({'step': 'RUN'}))
+            cur = len(ApiOper.list({'step': ['BILL', 'WAIT', 'RUN',
+                                             'SUPPORT']}))
             error = len(ApiOper.list({'step': 'ERROR'}))
-        return {'wait': wait, 'run': run, 'error': error}
+        return {'cur': cur, 'error': error}
 
     def label(self, opers):
-        label = 'Op : wait=%(wait)s run=%(run)s error=%(error)s' % opers
+        label = 'Operation (cur=%(cur)s/error=%(error)s)' % opers
         return label
 
     def icon(self, opers):
