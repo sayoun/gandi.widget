@@ -1,3 +1,9 @@
+gandi-widget (0.3) unstable; urgency=medium
+
+  * New features in upstream repository.
+
+ -- Olivier Roussy <olivier@gandi.net>  Mon, 31 Aug 2015 09:35:55 +0200
+
 gandi-widget (0.2) unstable; urgency=medium
 
   * New features in upstream repository.
