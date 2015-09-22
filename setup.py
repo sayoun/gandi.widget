@@ -33,7 +33,6 @@ extras_require = {
 
 tests_requires = requires + extras_require['test']
 
-
 setup(name=name,
       namespace_packages=['gandi'],
       version='0.3',
@@ -55,4 +54,7 @@ setup(name=name,
 [console_scripts]
 gwidget = gandi.widget.__main__:main
       """,
-      )
+      package_data = {
+          'gandi.widget': ['resources/*.png'],
+      }
+)

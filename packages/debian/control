@@ -10,7 +10,6 @@ Build-Depends-Indep: python-setuptools,
  python-gi,
  python3-gi,
  dh-python,
- quilt,
  gir1.2-appindicator3 | gir1.2-appindicator3-0.1,
  python-appindicator,
  gir1.2-gtk-2.0,
@@ -18,7 +17,7 @@ Build-Depends-Indep: python-setuptools,
  gir1.2-glib-2.0,
  gir1.2-appindicator3-0.1,
  gir1.2-notify-0.7
-Standards-Version: 3.9.4
+Standards-Version: 3.9.6
 X-Python-Version: >= 2.6
 X-Python3-Version: >= 3.0
 
@@ -26,6 +25,7 @@ Package: python-gandi-widget
 Provides: gandi-widget, ${python:Provides}
 Architecture: all
 Depends: ${python:Depends},
+ ${misc:Depends},
  gir1.2-appindicator3 | gir1.2-appindicator3-0.1,
  python-appindicator,
  python-gi,
@@ -43,6 +43,7 @@ Package: python3-gandi-widget
 Provides: gandi-widget, ${python3:Provides}
 Architecture: all
 Depends: ${python3:Depends},
+ ${misc:Depends},
  gir1.2-appindicator3 | gir1.2-appindicator3-0.1,
  python-appindicator,
  python3-gi,
